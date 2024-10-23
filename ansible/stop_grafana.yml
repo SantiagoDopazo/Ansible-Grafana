@@ -1,0 +1,15 @@
+---
+  - name: Stop Grafana
+    hosts: all
+    become: yes
+    tasks:
+      - name: Detener contenedores Docker
+        ansible.builtin.docker_container:
+          name: "{{ item }}"
+          state: stopped
+        loop:
+          - grafana
+          - prometheus
+          - node-exporter
+          - cadvisor
+          - redis  

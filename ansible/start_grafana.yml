@@ -1,0 +1,15 @@
+---
+  - name: Start Grafana
+    hosts: all
+    become: yes
+    tasks:
+      - name: Iniciar contenedores Docker
+        ansible.builtin.docker_container:
+          name: "{{ item }}"
+          state: started
+        loop:
+          - grafana
+          - prometheus
+          - node-exporter
+          - cadvisor
+          - redis

@@ -1,0 +1,2 @@
+[all]
+vm2 ansible_host=192.168.91.129 ansible_user=santigrafana ansible_ssh_pass=aguantecredicoop ansible_become_pass=aguantecredicoop
