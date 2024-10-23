@@ -2,7 +2,7 @@
 
 ## Inventory Changes
 
-`vm2 ansible_host=100.00.00 ansible_user=suser ansible_ssh_pass=pass ansible_become_pass=pass`
+`vm2 ansible_host=192.168.1.1 ansible_user=user ansible_ssh_pass=pass ansible_become_pass=pass`
 * Cambiar host a la IP donde se ejecutara ansible
 * Cambiar user a donde sera ejecutado
 
