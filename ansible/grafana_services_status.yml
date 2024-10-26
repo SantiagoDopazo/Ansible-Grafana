@@ -1,0 +1,80 @@
+---
+  - name: Verificar estado de contenedores de monitoreo
+    hosts: all
+    become: yes
+    tasks:
+      - name: Verificar si el contenedor de Prometheus está corriendo
+        ansible.builtin.command: "docker inspect -f \"{{ '{{ .State.Running }}' }}\" prometheus"
+        register: prometheus_status
+        ignore_errors: yes
+  
+      - name: Verificar si el contenedor de Grafana está corriendo
+        ansible.builtin.command: "docker inspect -f \"{{ '{{ .State.Running }}' }}\" grafana"
+        register: grafana_status
+        ignore_errors: yes
+  
+      - name: Verificar si el contenedor de Node Exporter está corriendo
+        ansible.builtin.command: "docker inspect -f \"{{ '{{ .State.Running }}' }}\" node-exporter"
+        register: node_exporter_status
+        ignore_errors: yes
+  
+      - name: Verificar si el contenedor de cAdvisor está corriendo
+        ansible.builtin.command: "docker inspect -f \"{{ '{{ .State.Running }}' }}\" cadvisor"
+        register: cadvisor_status
+        ignore_errors: yes
+  
+      - name: Verificar si el contenedor de Redis está corriendo
+        ansible.builtin.command: "docker inspect -f \"{{ '{{ .State.Running }}' }}\" redis"
+        register: redis_status
+        ignore_errors: yes
+  
+      # Validación de cada contenedor
+      - name: Validar si Prometheus está corriendo
+        ansible.builtin.debug:
+          msg: "Prometheus está corriendo."
+        when: prometheus_status.stdout == "true"
+  
+      - name: Avisar si Prometheus no está corriendo
+        ansible.builtin.debug:
+          msg: "Prometheus no está corriendo o no existe."
+        when: prometheus_status.stdout != "true"
+  
+      - name: Validar si Grafana está corriendo
+        ansible.builtin.debug:
+          msg: "Grafana está corriendo."
+        when: grafana_status.stdout == "true"
+  
+      - name: Avisar si Grafana no está corriendo
+        ansible.builtin.debug:
+          msg: "Grafana no está corriendo o no existe."
+        when: grafana_status.stdout != "true"
+  
+      - name: Validar si Node Exporter está corriendo
+        ansible.builtin.debug:
+          msg: "Node Exporter está corriendo."
+        when: node_exporter_status.stdout == "true"
+  
+      - name: Avisar si Node Exporter no está corriendo
+        ansible.builtin.debug:
+          msg: "Node Exporter no está corriendo o no existe."
+        when: node_exporter_status.stdout != "true"
+  
+      - name: Validar si cAdvisor está corriendo
+        ansible.builtin.debug:
+          msg: "cAdvisor está corriendo."
+        when: cadvisor_status.stdout == "true"
+  
+      - name: Avisar si cAdvisor no está corriendo
+        ansible.builtin.debug:
+          msg: "cAdvisor no está corriendo o no existe."
+        when: cadvisor_status.stdout != "true"
+  
+      - name: Validar si Redis está corriendo
+        ansible.builtin.debug:
+          msg: "Redis está corriendo."
+        when: redis_status.stdout == "true"
+  
+      - name: Avisar si Redis no está corriendo
+        ansible.builtin.debug:
+          msg: "Redis no está corriendo o no existe."
+        when: redis_status.stdout != "true"
