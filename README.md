@@ -2,7 +2,7 @@
 
 ## Installation
 
-Instalar docker en la VM deseada
+Instalar docker en la VM2
 * Actualizar sistema
 ```
 sudo dnf update -y
