@@ -1,0 +1,39 @@
+- name: Migrar dashboard de Grafana de una VM a otra
+  hosts: origen_vm
+  tasks:
+    - name: Exportar configuración de la dashboard de Grafana
+      uri:
+        url: "http://192.168.91.132:3000/api/dashboards/uid/{{ dashboard_uid }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ grafana_api_key }}"
+        return_content: yes
+      register: grafana_dashboard
+
+    - name: Guardar configuración de dashboard en archivo JSON
+      copy:
+        content: "{{ grafana_dashboard.content }}"
+        dest: "/tmp/dashboard_export.json"
+
+- name: Migrar archivo dashboard exportada
+  hosts: destino_vm
+  tasks:
+    - name: Copiar archivo de dashboard a la VM de destino
+      copy:
+        src: "/tmp/dashboard_export.json"
+        dest: "/tmp/dashboard_export.json"
+
+    - name: Subir dashboard a Grafana
+      uri:
+        url: "http://192.168.91.132:3000/api/dashboards/db"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ grafana_api_key }}"
+          Content-Type: "application/json"
+        body: "{{ lookup('file', '/tmp/dashboard_export.json') }}"
+        body_format: json
+      register: import_response
+
+    - name: Cambiar a la nueva vista del dashboard
+      debug:
+        msg: "Puedes acceder al nuevo dashboard en: http://192.168.91.132:3000/d/{{ import_response.json.uid }}/{{ import_response.json.slug }}"
